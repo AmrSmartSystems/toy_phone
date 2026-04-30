@@ -95,6 +95,48 @@
   .music-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #ff1493; }
   .music-btn.ringing { background: #ff1493; animation: ring-pulse 0.4s ease-in-out infinite alternate; }
   @keyframes ring-pulse { from { transform: scale(1); } to { transform: scale(1.04); } }
+  
+  .action-buttons {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%;
+  }
+  .action-btn {
+    background: #9c27b0; border: 3px solid #6a0dad; border-radius: 12px;
+    height: 44px; color: #fff; font-size: 12px; font-weight: 900;
+    font-family: 'Nunito', sans-serif; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 3px 0 #6a0dad; transition: transform 0.08s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .action-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #6a0dad; }
+  
+  .modal {
+    display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); z-index: 1000;
+    align-items: center; justify-content: center;
+  }
+  .modal.active { display: flex; }
+  .modal-content {
+    background: #ff69b4; border-radius: 20px; border: 4px solid #ff1493;
+    padding: 20px; max-width: 90%; box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .letter-grid {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px;
+  }
+  .letter-btn {
+    background: #fff; border: 2px solid #ff1493; border-radius: 8px;
+    height: 40px; font-size: 16px; font-weight: 900; color: #ff1493;
+    cursor: pointer; transition: transform 0.08s, background 0.08s;
+    display: flex; align-items: center; justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .letter-btn:active { transform: scale(0.95); background: #ffc0e0; }
+  .modal-close {
+    background: #ff7b7b; border: 2px solid #c94040; border-radius: 8px;
+    color: #fff; font-weight: 900; height: 36px; cursor: pointer;
+    align-self: flex-end; padding: 0 16px;
+    -webkit-tap-highlight-color: transparent;
+  }
 </style>
 </head>
 <body>
@@ -121,11 +163,23 @@
     <button class="rt-btn" data-rt="1">Message</button>
     <button class="rt-btn" data-rt="2">Sci-Fi</button>
   </div>
+  <div class="action-buttons">
+    <button class="action-btn" id="modeBtn">Mode: ABC</button>
+    <button class="action-btn" id="alphaBtn">A-Z</button>
+  </div>
   <button class="music-btn" id="musicBtn">
     <span id="music-icon">♪</span>
     <span id="music-label">RING</span>
   </button>
 </div>
+
+<div class="modal" id="alphaModal">
+  <div class="modal-content">
+    <div class="letter-grid" id="letterGrid"></div>
+    <button class="modal-close" id="closeModal">✕</button>
+  </div>
+</div>
+
 <script>
 (function() {
   const displayText = document.getElementById('display-text');
@@ -134,8 +188,22 @@
   const musicIcon = document.getElementById('music-icon');
   const clearBtn = document.getElementById('clearBtn');
   const rtBtns = document.querySelectorAll('.rt-btn');
+  const alphaBtn = document.getElementById('alphaBtn');
+  const modeBtn = document.getElementById('modeBtn');
+  const alphaModal = document.getElementById('alphaModal');
+  const letterGrid = document.getElementById('letterGrid');
+  const closeModal = document.getElementById('closeModal');
 
-  let number = '', audioCtx = null, ringing = false, selectedRt = 0, ringInterval = null;
+  let number = '', audioCtx = null, ringing = false, selectedRt = 0, ringInterval = null, descriptiveMode = false;
+
+  // Dictionary for descriptive mode
+  const wordMap = {
+    'A': 'Apple', 'B': 'Ball', 'C': 'Cat', 'D': 'Dhanvi', 'E': 'Elephant',
+    'F': 'Fish', 'G': 'Goat', 'H': 'House', 'I': 'Ice', 'J': 'Jug',
+    'K': 'Kite', 'L': 'Lion', 'M': 'Mango', 'N': 'Nest', 'O': 'Orange',
+    'P': 'Pig', 'Q': 'Queen', 'R': 'Rabbit', 'S': 'Sun', 'T': 'Tiger',
+    'U': 'Umbrella', 'V': 'Violin', 'W': 'Water', 'X': 'Xylophone', 'Y': 'Yo-yo', 'Z': 'Zebra'
+  };
 
   function getCtx() {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -147,6 +215,16 @@
       window.speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(d === '0' ? 'zero' : d);
       u.rate = 1.15; u.pitch = 1.1;
+      window.speechSynthesis.speak(u);
+    }
+  }
+
+  function speakLetter(letter) {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const text = descriptiveMode ? `${letter} for ${wordMap[letter]}` : letter;
+      const u = new SpeechSynthesisUtterance(text);
+      u.rate = 1.0; u.pitch = 1.1;
       window.speechSynthesis.speak(u);
     }
   }
@@ -204,6 +282,46 @@
     window.speechSynthesis && window.speechSynthesis.cancel();
   }
 
+  // Initialize letter grid
+  function initLetterGrid() {
+    letterGrid.innerHTML = '';
+    for (let i = 65; i <= 90; i++) {
+      const letter = String.fromCharCode(i);
+      const btn = document.createElement('button');
+      btn.className = 'letter-btn';
+      btn.textContent = letter;
+      btn.addEventListener('click', () => {
+        speakLetter(letter);
+      });
+      letterGrid.appendChild(btn);
+    }
+  }
+
+  // Mode toggle
+  modeBtn.addEventListener('click', () => {
+    descriptiveMode = !descriptiveMode;
+    modeBtn.textContent = descriptiveMode ? 'Mode: A-Z' : 'Mode: ABC';
+  });
+
+  // Alpha button
+  alphaBtn.addEventListener('click', () => {
+    initLetterGrid();
+    alphaModal.classList.add('active');
+  });
+
+  // Close modal
+  closeModal.addEventListener('click', () => {
+    alphaModal.classList.remove('active');
+    window.speechSynthesis && window.speechSynthesis.cancel();
+  });
+
+  alphaModal.addEventListener('click', (e) => {
+    if (e.target === alphaModal) {
+      alphaModal.classList.remove('active');
+      window.speechSynthesis && window.speechSynthesis.cancel();
+    }
+  });
+
   musicBtn.addEventListener('click', () => ringing ? stopRing() : startRing());
 
   rtBtns.forEach(btn => {
@@ -226,8 +344,7 @@
   });
 
   clearBtn.addEventListener('click', () => {
-    number = ''; displayText.textContent = '';
-    window.speechSynthesis && window.speechSynthesis.cancel();
+    number = ''; displayText.textContent = '';\n    window.speechSynthesis && window.speechSynthesis.cancel();
     clearBtn.classList.add('pressed');
     setTimeout(() => clearBtn.classList.remove('pressed'), 120);
   });
