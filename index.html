@@ -1,9 +1,230 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Toy Phone</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Toy Phone</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;900&display=swap" rel="stylesheet"/>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background: #fff9e6;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Nunito', sans-serif;
+  }
+  .phone-body {
+    width: 240px;
+    background: #f5c842;
+    border-radius: 36px;
+    border: 4px solid #d4a010;
+    padding: 20px 18px 28px;
+    display: flex; flex-direction: column; align-items: center; gap: 16px;
+    box-shadow: 0 8px 0 #b88a00, 0 10px 24px rgba(0,0,0,0.18);
+  }
+  .phone-speaker {
+    width: 60px; height: 10px;
+    background: #d4a010; border-radius: 8px;
+    overflow: hidden; display: flex; align-items: center; justify-content: center;
+  }
+  .phone-speaker::before {
+    content: '';
+    width: 48px; height: 3px;
+    background: repeating-linear-gradient(90deg, #b88a00 0, #b88a00 4px, transparent 4px, transparent 7px);
+    border-radius: 2px;
+  }
+  .display {
+    width: 100%; background: #fff8e1; border-radius: 14px;
+    border: 3px solid #d4a010; min-height: 52px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; font-weight: 900; color: #5a3e00;
+    letter-spacing: 3px; padding: 4px 10px;
+    font-family: 'Courier New', monospace;
+    word-break: break-all; text-align: center;
+  }
+  .cursor {
+    display: inline-block; width: 2px; height: 28px;
+    background: #d4a010; margin-left: 2px;
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  .keypad {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px; width: 100%;
+  }
+  .key {
+    background: #fff; border: 3px solid #d4a010; border-radius: 14px;
+    height: 54px; font-size: 22px; font-weight: 900; color: #5a3e00;
+    cursor: pointer; transition: transform 0.08s, background 0.08s;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 0 #d4a010; user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .key:active, .key.pressed {
+    transform: translateY(3px); box-shadow: 0 1px 0 #d4a010; background: #ffeab3;
+  }
+  .key-0 { grid-column: 1 / -1; }
+  .key-clear {
+    background: #ff7b7b; border-color: #c94040; color: #fff;
+    box-shadow: 0 4px 0 #c94040; font-size: 16px;
+  }
+  .key-clear:active, .key-clear.pressed {
+    transform: translateY(3px); box-shadow: 0 1px 0 #c94040; background: #ff4f4f;
+  }
+  .ringtone-picker {
+    display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; width: 100%;
+  }
+  .rt-btn {
+    background: #fff; border: 2px solid #d4a010; border-radius: 10px;
+    padding: 4px 12px; font-size: 12px; font-weight: 900;
+    font-family: 'Nunito', sans-serif; color: #5a3e00; cursor: pointer;
+    transition: background 0.1s; -webkit-tap-highlight-color: transparent;
+  }
+  .rt-btn.active { background: #ffeab3; border-color: #b88a00; }
+  .rt-btn:hover { background: #fdf3c2; }
+  .music-btn {
+    width: 100%; background: #ff7b2b; border: 3px solid #c75512;
+    border-radius: 16px; height: 54px; color: #fff; font-size: 15px;
+    font-weight: 900; font-family: 'Nunito', sans-serif; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    box-shadow: 0 4px 0 #c75512; transition: transform 0.08s, background 0.08s;
+    letter-spacing: 1px; -webkit-tap-highlight-color: transparent;
+  }
+  .music-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #c75512; }
+  .music-btn.ringing { background: #e05000; animation: ring-pulse 0.4s ease-in-out infinite alternate; }
+  @keyframes ring-pulse { from { transform: scale(1); } to { transform: scale(1.04); } }
+</style>
 </head>
 <body>
-    <h1>Welcome to Toy Phone</h1>
-    <p>This is a simple toy phone application.</p>
+<div class="phone-body">
+  <div class="phone-speaker"></div>
+  <div class="display">
+    <span id="display-text"></span><span class="cursor"></span>
+  </div>
+  <div class="keypad">
+    <button class="key" data-digit="1">1</button>
+    <button class="key" data-digit="2">2</button>
+    <button class="key" data-digit="3">3</button>
+    <button class="key" data-digit="4">4</button>
+    <button class="key" data-digit="5">5</button>
+    <button class="key" data-digit="6">6</button>
+    <button class="key" data-digit="7">7</button>
+    <button class="key" data-digit="8">8</button>
+    <button class="key" data-digit="9">9</button>
+    <button class="key key-clear" id="clearBtn">CLR</button>
+    <button class="key key-0" data-digit="0">0</button>
+  </div>
+  <div class="ringtone-picker">
+    <button class="rt-btn active" data-rt="0">Retro</button>
+    <button class="rt-btn" data-rt="1">Tropical</button>
+    <button class="rt-btn" data-rt="2">Sci-Fi</button>
+  </div>
+  <button class="music-btn" id="musicBtn">
+    <span id="music-icon">♪</span>
+    <span id="music-label">RING</span>
+  </button>
+</div>
+<script>
+(function() {
+  const displayText = document.getElementById('display-text');
+  const musicBtn = document.getElementById('musicBtn');
+  const musicLabel = document.getElementById('music-label');
+  const musicIcon = document.getElementById('music-icon');
+  const clearBtn = document.getElementById('clearBtn');
+  const rtBtns = document.querySelectorAll('.rt-btn');
+
+  let number = '', audioCtx = null, ringing = false, selectedRt = 0, ringInterval = null;
+
+  function getCtx() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return audioCtx;
+  }
+
+  function speakNumber(d) {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(d === '0' ? 'zero' : d);
+      u.rate = 1.15; u.pitch = 1.1;
+      window.speechSynthesis.speak(u);
+    }
+  }
+
+  function tone(freq, type, start, dur, ctx) {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(0, start);
+    g.gain.linearRampToValueAtTime(0.3, start + 0.02);
+    g.gain.linearRampToValueAtTime(0, start + dur);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(start); o.stop(start + dur + 0.01);
+  }
+
+  const ringtones = [
+    function(ctx) {
+      const n = ctx.currentTime;
+      [880,1046,1318,1046,880,698,880].forEach((f,i) => tone(f,'square',n+i*0.18,0.14,ctx));
+    },
+    function(ctx) {
+      const n = ctx.currentTime;
+      [523,659,784,1046,784,659,523,440,523].forEach((f,i) => {
+        tone(f,'sine',n+i*0.15,0.12,ctx);
+        tone(f*1.5,'triangle',n+i*0.15+0.06,0.07,ctx);
+      });
+    },
+    function(ctx) {
+      const n = ctx.currentTime;
+      for(let i=0;i<8;i++){
+        tone(200+i*180,'sawtooth',n+i*0.12,0.1,ctx);
+        tone((200+i*180)*2,'square',n+i*0.12,0.08,ctx);
+      }
+    }
+  ];
+
+  function playRing() { ringtones[selectedRt](getCtx()); }
+
+  function startRing() {
+    ringing = true;
+    musicBtn.classList.add('ringing');
+    musicLabel.textContent = 'STOP'; musicIcon.textContent = '♬';
+    playRing(); ringInterval = setInterval(playRing, 1600);
+  }
+
+  function stopRing() {
+    ringing = false;
+    musicBtn.classList.remove('ringing');
+    musicLabel.textContent = 'RING'; musicIcon.textContent = '♪';
+    clearInterval(ringInterval); ringInterval = null;
+  }
+
+  musicBtn.addEventListener('click', () => ringing ? stopRing() : startRing());
+
+  rtBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      rtBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedRt = parseInt(btn.dataset.rt);
+      if (ringing) { stopRing(); startRing(); }
+    });
+  });
+
+  document.querySelectorAll('.key[data-digit]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const d = btn.dataset.digit;
+      number += d; displayText.textContent = number;
+      btn.classList.add('pressed');
+      setTimeout(() => btn.classList.remove('pressed'), 120);
+      speakNumber(d);
+    });
+  });
+
+  clearBtn.addEventListener('click', () => {
+    number = ''; displayText.textContent = '';
+    window.speechSynthesis && window.speechSynthesis.cancel();
+    clearBtn.classList.add('pressed');
+    setTimeout(() => clearBtn.classList.remove('pressed'), 120);
+  });
+})();
+</script>
 </body>
 </html>
