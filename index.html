@@ -9,33 +9,33 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     min-height: 100vh;
-    background: #fff9e6;
+    background: #ffe6f0;
     display: flex; align-items: center; justify-content: center;
     font-family: 'Nunito', sans-serif;
   }
   .phone-body {
     width: 240px;
-    background: #f5c842;
+    background: #ff69b4;
     border-radius: 36px;
-    border: 4px solid #d4a010;
+    border: 4px solid #ff1493;
     padding: 20px 18px 28px;
     display: flex; flex-direction: column; align-items: center; gap: 16px;
-    box-shadow: 0 8px 0 #b88a00, 0 10px 24px rgba(0,0,0,0.18);
+    box-shadow: 0 8px 0 #db0073, 0 10px 24px rgba(0,0,0,0.18);
   }
   .phone-speaker {
     width: 60px; height: 10px;
-    background: #d4a010; border-radius: 8px;
+    background: #ff1493; border-radius: 8px;
     overflow: hidden; display: flex; align-items: center; justify-content: center;
   }
   .phone-speaker::before {
     content: '';
     width: 48px; height: 3px;
-    background: repeating-linear-gradient(90deg, #b88a00 0, #b88a00 4px, transparent 4px, transparent 7px);
+    background: repeating-linear-gradient(90deg, #db0073 0, #db0073 4px, transparent 4px, transparent 7px);
     border-radius: 2px;
   }
   .display {
     width: 100%; background: #fff8e1; border-radius: 14px;
-    border: 3px solid #d4a010; min-height: 52px;
+    border: 3px solid #ff1493; min-height: 52px;
     display: flex; align-items: center; justify-content: center;
     font-size: 26px; font-weight: 900; color: #5a3e00;
     letter-spacing: 3px; padding: 4px 10px;
@@ -44,7 +44,7 @@
   }
   .cursor {
     display: inline-block; width: 2px; height: 28px;
-    background: #d4a010; margin-left: 2px;
+    background: #ff1493; margin-left: 2px;
     animation: blink 1s step-end infinite;
     vertical-align: middle;
   }
@@ -54,20 +54,21 @@
     gap: 10px; width: 100%;
   }
   .key {
-    background: #fff; border: 3px solid #d4a010; border-radius: 14px;
-    height: 54px; font-size: 22px; font-weight: 900; color: #5a3e00;
+    background: #fff; border: 3px solid #ff1493; border-radius: 14px;
+    height: 54px; font-size: 22px; font-weight: 900; color: #ff1493;
     cursor: pointer; transition: transform 0.08s, background 0.08s;
     display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 4px 0 #d4a010; user-select: none;
+    box-shadow: 0 4px 0 #ff1493; user-select: none;
     -webkit-tap-highlight-color: transparent;
   }
   .key:active, .key.pressed {
-    transform: translateY(3px); box-shadow: 0 1px 0 #d4a010; background: #ffeab3;
+    transform: translateY(3px); box-shadow: 0 1px 0 #ff1493; background: #ffc0e0;
   }
-  .key-0 { grid-column: 1 / -1; }
+  .key-0 { grid-column: 1 / 2; }
   .key-clear {
     background: #ff7b7b; border-color: #c94040; color: #fff;
     box-shadow: 0 4px 0 #c94040; font-size: 16px;
+    grid-column: 2 / 4;
   }
   .key-clear:active, .key-clear.pressed {
     transform: translateY(3px); box-shadow: 0 1px 0 #c94040; background: #ff4f4f;
@@ -76,23 +77,23 @@
     display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; width: 100%;
   }
   .rt-btn {
-    background: #fff; border: 2px solid #d4a010; border-radius: 10px;
+    background: #fff; border: 2px solid #ff1493; border-radius: 10px;
     padding: 4px 12px; font-size: 12px; font-weight: 900;
-    font-family: 'Nunito', sans-serif; color: #5a3e00; cursor: pointer;
+    font-family: 'Nunito', sans-serif; color: #ff1493; cursor: pointer;
     transition: background 0.1s; -webkit-tap-highlight-color: transparent;
   }
-  .rt-btn.active { background: #ffeab3; border-color: #b88a00; }
-  .rt-btn:hover { background: #fdf3c2; }
+  .rt-btn.active { background: #ffc0e0; border-color: #db0073; }
+  .rt-btn:hover { background: #ffd9e8; }
   .music-btn {
-    width: 100%; background: #ff7b2b; border: 3px solid #c75512;
+    width: 100%; background: #ff69b4; border: 3px solid #ff1493;
     border-radius: 16px; height: 54px; color: #fff; font-size: 15px;
     font-weight: 900; font-family: 'Nunito', sans-serif; cursor: pointer;
     display: flex; align-items: center; justify-content: center; gap: 8px;
-    box-shadow: 0 4px 0 #c75512; transition: transform 0.08s, background 0.08s;
+    box-shadow: 0 4px 0 #ff1493; transition: transform 0.08s, background 0.08s;
     letter-spacing: 1px; -webkit-tap-highlight-color: transparent;
   }
-  .music-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #c75512; }
-  .music-btn.ringing { background: #e05000; animation: ring-pulse 0.4s ease-in-out infinite alternate; }
+  .music-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #ff1493; }
+  .music-btn.ringing { background: #ff1493; animation: ring-pulse 0.4s ease-in-out infinite alternate; }
   @keyframes ring-pulse { from { transform: scale(1); } to { transform: scale(1.04); } }
 </style>
 </head>
@@ -112,12 +113,12 @@
     <button class="key" data-digit="7">7</button>
     <button class="key" data-digit="8">8</button>
     <button class="key" data-digit="9">9</button>
-    <button class="key key-clear" id="clearBtn">CLR</button>
     <button class="key key-0" data-digit="0">0</button>
+    <button class="key key-clear" id="clearBtn">CLR</button>
   </div>
   <div class="ringtone-picker">
     <button class="rt-btn active" data-rt="0">Retro</button>
-    <button class="rt-btn" data-rt="1">Tropical</button>
+    <button class="rt-btn" data-rt="1">Message</button>
     <button class="rt-btn" data-rt="2">Sci-Fi</button>
   </div>
   <button class="music-btn" id="musicBtn">
@@ -160,17 +161,22 @@
     o.start(start); o.stop(start + dur + 0.01);
   }
 
+  function speakMessage() {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance('Hello Dhanvi, I love you');
+      u.rate = 1.0; u.pitch = 1.0;
+      window.speechSynthesis.speak(u);
+    }
+  }
+
   const ringtones = [
     function(ctx) {
       const n = ctx.currentTime;
       [880,1046,1318,1046,880,698,880].forEach((f,i) => tone(f,'square',n+i*0.18,0.14,ctx));
     },
     function(ctx) {
-      const n = ctx.currentTime;
-      [523,659,784,1046,784,659,523,440,523].forEach((f,i) => {
-        tone(f,'sine',n+i*0.15,0.12,ctx);
-        tone(f*1.5,'triangle',n+i*0.15+0.06,0.07,ctx);
-      });
+      speakMessage();
     },
     function(ctx) {
       const n = ctx.currentTime;
@@ -195,6 +201,7 @@
     musicBtn.classList.remove('ringing');
     musicLabel.textContent = 'RING'; musicIcon.textContent = '♪';
     clearInterval(ringInterval); ringInterval = null;
+    window.speechSynthesis && window.speechSynthesis.cancel();
   }
 
   musicBtn.addEventListener('click', () => ringing ? stopRing() : startRing());
